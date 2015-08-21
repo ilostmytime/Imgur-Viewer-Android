@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 /**
  * Created by David-Samsung on 7/28/2015.
  */
+/*
 public class loadSubreddit extends AsyncTask<String,Void,List<String>>{
     String url;
     String urlbase;
@@ -112,3 +113,4 @@ public class loadSubreddit extends AsyncTask<String,Void,List<String>>{
         }
     }
 }
+*/

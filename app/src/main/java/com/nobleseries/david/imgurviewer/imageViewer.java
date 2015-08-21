@@ -7,8 +7,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,9 +34,12 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class imageViewer extends Activity {
     Bitmap image = null;
+    int swipeCounter = 0; //Counter used to tell where the user's swipe will be for URLs.get()
     ImageView img;
     String subreddit = "";
     List<String> urls = new ArrayList<String>();
+    private float x1,x2;
+    static final int MIN_DISTANCE = 150;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +50,59 @@ public class imageViewer extends Activity {
         loadSubreddit loadSub = new loadSubreddit(subreddit);
         loadSub.execute();
         img = (ImageView)findViewById(R.id.imageView);
+        img.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction())
+                {
+                    case MotionEvent.ACTION_DOWN:
+                        x1 = event.getX();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        x2 = event.getX();
+                        float deltaX = x2 - x1;
+                        if (Math.abs(deltaX) > MIN_DISTANCE)
+                        {
+                            Toast.makeText(imageViewer.this, "left2right swipe", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            System.out.println("This happens now");
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
         LoadimageFromURL loadImage = new LoadimageFromURL();
         loadImage.execute();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        switch(event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                x1 = event.getX();
+                break;
+
+            case MotionEvent.ACTION_UP:
+                x2 = event.getX();
+                float deltaX = x2 - x1;
+                if (Math.abs(deltaX) > MIN_DISTANCE)
+                {
+                    Toast.makeText(this, "left2right swipe", Toast.LENGTH_SHORT).show ();
+                }
+                else
+                {
+                   System.out.println("This happens now");
+                }
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
     public class loadSubreddit extends AsyncTask<String,Void,List<String>>{
         String url;
         String urlbase;
@@ -108,11 +163,12 @@ public class imageViewer extends Activity {
     }
     public class LoadimageFromURL extends AsyncTask<String,Void,Bitmap>{
 
+
         @Override
         protected Bitmap doInBackground(String... params) {
 
             try{
-                URL url = new URL(urls.get(0));
+                URL url = new URL(urls.get(swipeCounter));
                 InputStream is = url.openConnection().getInputStream();
                 Bitmap bitMap = BitmapFactory.decodeStream(is);
                 return bitMap;
@@ -128,7 +184,6 @@ public class imageViewer extends Activity {
         protected void onPostExecute(Bitmap result){
             super.onPostExecute(result);
             img.setImageBitmap(result);
-
         }
     }
 }
