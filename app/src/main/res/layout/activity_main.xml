@@ -21,8 +21,7 @@
         android:id="@+id/btnLoad"
         android:layout_marginBottom="129dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="onLoad" />
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
