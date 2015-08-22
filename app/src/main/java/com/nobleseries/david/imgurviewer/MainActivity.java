@@ -20,7 +20,6 @@ public class MainActivity extends Activity {
     TextView lblSubreddit;
     public String url;
    // public List<String> imageUrls = new ArrayList<String>();
-   // public List<String> imageTitles = new ArrayList<String>();
     public int currentPage = 0;
     public int imageCount = 45;
     public String baseUrl = "https://i.imgur.com/";
